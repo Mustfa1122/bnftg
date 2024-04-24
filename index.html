@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countries data Fetch</title>
+    <style>
+        body{
+            text-align: center;
+            overflow: hidden;
+            background-color: beige;
+        }
+        h1,h2,b{
+            color: blueviolet;
+        }
+        b{
+            font-size: larger;
+        }
+        input{
+            padding: 10px 20px;
+            border: none;
+            background-color: blueviolet;
+            border-radius: 10px;
+            font-weight: bold;
+            color: azure;
+        }
+        ::-webkit-input-placeholder{
+            color: azure;
+            font-weight: bold;
+        }
+        input:focus{
+            outline: 0px;
+            background-color: rgb(247, 247, 239);
+            color: blueviolet;
+            border: 2px solid blueviolet;
+        }
+        button{
+            padding: 10px 15px;
+            margin-left: 10px;
+            border: none;
+            background-color: blueviolet;
+            color: azure;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        button:hover{
+            cursor: pointer;
+            background-color: rgb(237, 241, 241);
+            color: blueviolet;
+            border: 2px solid blueviolet;
+            transition: 0.55s;
+        }
+    </style>
+</head>
+<body>
+    <h1> Countries Data</h1>
+    <input type="text" id="icn" placeholder="Enter country name">
+    <button onclick="df()">search</button>
+    <button onclick="ont()">Get ful details</button>
+    <div id="cd"></div>
+
+
+   <script>
+       async function df() {
+    var input = document.getElementById("icn").value.trim();
+    if (!input) {
+        alert('Please enter a country name!');
+        return;
+    }
+    try {
+        let Fetch = await fetch(`https://restcountries.com/v3.1/name/${input}`);
+        let data = await Fetch.json();
+
+        if (data.status === 404) {
+            alert('Enter a valid country name!');
+            return;
+        }
+        const country = data[0];
+        const details = `
+            <h1>${country.name.common}</h1>
+            <p><b>Capital:</b><br><br>${country.capital}</p>
+            <p><b>Population:</b><br><br>${country.population.toLocaleString()}</p>
+            <p><b>Languages:</b><br><br>${Object.values(country.languages).join(', ')}</p>
+            <p><b>Flag:</b><br><br><img src="${country.flags.png}" alt="${country.name.common} Flag" style="max-width: 150px;"></p>
+        `;
+        document.getElementById('cd').innerHTML = details;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Error fetching data. Please try again.');
+    }
+}
+</script>
+</body>
+</html>
